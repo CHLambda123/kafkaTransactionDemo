@@ -1,0 +1,4 @@
+git rm --cached .mvn
+git rm --cached mvnw
+git rm --cached mvnw.cmd
+git rm --cached target
