@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class Controller {
     @Autowired
     private MyService myService;
-    @GetMapping("/single_thread")
-    public String getSingleThreadTaskExecTime() {
-        return myService.getSingleThreadTime();
-    }
     @GetMapping("/kafka")
     public String getKafkaTaskExecTime() {
         return myService.getKafkaTime();
