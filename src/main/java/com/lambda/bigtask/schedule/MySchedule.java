@@ -47,11 +47,14 @@ public class MySchedule {
     public void sendKafkaMsg() {
         List<AEntity> aEntities = aMapper.selectList(new QueryWrapper<AEntity>().eq("status", "not_yet"));
         for (int i = 0; i < aEntities.size(); i++) {
+            this.doAiJob();
             AEntity aEntity = aEntities.get(i);
             aEntity.setStatus("done");
             aMapper.update(aEntity, new QueryWrapper<AEntity>().eq("id", aEntity.getId()));
             kafkaTemplate.send(new ProducerRecord(topicName, JSON.toJSONString(new KafkaEntity("kafka-" + aEntity.getId(), "has_no_b_info"))));
         }
-
+    }
+    private void doAiJob() {
+        // do Ai Job
     }
 }

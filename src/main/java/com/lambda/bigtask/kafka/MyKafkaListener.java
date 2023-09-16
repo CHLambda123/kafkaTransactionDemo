@@ -20,9 +20,14 @@ public class MyKafkaListener {
         KafkaEntity msg = JSON.parseObject(message, KafkaEntity.class);
         if ("has_no_b_info".equals(msg.getStatus())) {
             Long id = Long.valueOf(msg.getId().substring(6));
+            this.doBiJob();
             for (int j=0; j<bCountPerA; j++) {
                 bMapper.insert(new BEntity("kafka-"+id+"-"+j));
             }
         }
     }
+    private void doBiJob() {
+        // do BiJob
+    }
+
 }
