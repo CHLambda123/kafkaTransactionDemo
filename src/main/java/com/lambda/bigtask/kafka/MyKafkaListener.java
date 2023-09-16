@@ -14,15 +14,30 @@ public class MyKafkaListener {
     private BMapper bMapper;
     private final static Integer bCountPerA = 40;
 
-    @KafkaListener(id = "test1", groupId = "testgroup", topics = {"testtask"})
+    @KafkaListener(id = "doAi", groupId = "testgroup", topics = {"doAi"})
     @Transactional(rollbackFor = {Exception.class})
-    public void listener1(String message) {
+    public void doAiListener(String message) {
         KafkaEntity msg = JSON.parseObject(message, KafkaEntity.class);
-        if ("has_no_b_info".equals(msg.getStatus())) {
+        if ("doAiJob".equals(msg.getStatus())) {
+            this.doAiJob();
             Long id = Long.valueOf(msg.getId().substring(6));
             for (int j=0; j<bCountPerA; j++) {
-                bMapper.insert(new BEntity("kafka-"+id+"-"+j));
+                bMapper.insert(new BEntity("Btask-"+id+"-"+j, "not_yet"));
             }
         }
+    }
+    @KafkaListener(id = "doBi", groupId = "testgroup", topics = {"doBi"})
+    @Transactional(rollbackFor = {Exception.class})
+    public void doBiListener(String message) {
+        KafkaEntity msg = JSON.parseObject(message, KafkaEntity.class);
+        if ("doBiJob".equals(msg.getStatus())) {
+            this.doBiJob();
+        }
+    }
+    private void doAiJob() {
+        // do Ai job
+    }
+    private void doBiJob() {
+        // do Bi job
     }
 }

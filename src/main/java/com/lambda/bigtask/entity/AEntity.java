@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-@TableName("Atask")
+@TableName("tableA")
 @Data
 public class AEntity {
     @TableId(value = "id", type = IdType.ASSIGN_ID)

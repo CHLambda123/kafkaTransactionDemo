@@ -41,17 +41,30 @@ public class MySchedule {
     private KafkaTemplate kafkaTemplate;
     @Autowired
     private AMapper aMapper;
-    private final static String topicName = "testtask";
+    @Autowired
+    private BMapper bMapper;
+    private final static String doAiTopicName = "doAi";
+    private final static String doBiTopicName = "doBi";
     @Scheduled(fixedRate = 1000)
     @Transactional(rollbackFor = {Exception.class})
-    public void sendKafkaMsg() {
+    public void sendDoAiJobKafkaMsg() {
         List<AEntity> aEntities = aMapper.selectList(new QueryWrapper<AEntity>().eq("status", "not_yet"));
         for (int i = 0; i < aEntities.size(); i++) {
             AEntity aEntity = aEntities.get(i);
             aEntity.setStatus("done");
             aMapper.update(aEntity, new QueryWrapper<AEntity>().eq("id", aEntity.getId()));
-            kafkaTemplate.send(new ProducerRecord(topicName, JSON.toJSONString(new KafkaEntity("kafka-" + aEntity.getId(), "has_no_b_info"))));
+            kafkaTemplate.send(new ProducerRecord(doAiTopicName, JSON.toJSONString(new KafkaEntity("Atask-" + aEntity.getId(), "doAiJob"))));
         }
-
+    }
+    @Scheduled(fixedRate = 1000)
+    @Transactional(rollbackFor = {Exception.class})
+    public void sendDoBiJobKafkaMsg() {
+        List<BEntity> bEntities = bMapper.selectList(new QueryWrapper<BEntity>().eq("status", "not_yet"));
+        for (int i = 0; i < bEntities.size(); i++) {
+            BEntity bEntity = bEntities.get(i);
+            bEntity.setStatus("done");
+            bMapper.update(bEntity, new QueryWrapper<BEntity>().eq("id", bEntity.getId()));
+            kafkaTemplate.send(new ProducerRecord(doBiTopicName, JSON.toJSONString(new KafkaEntity("Btask-" + bEntity.getId(), "doBiJob"))));
+        }
     }
 }
